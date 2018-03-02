@@ -1,6 +1,6 @@
 package me.grundyboy34.deeds.items;
 
-import me.grundyboy34.deeds.Main;
+import me.grundyboy34.deeds.Reference;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
@@ -21,14 +21,14 @@ public class _ItemBase extends Item
 		this.name = name;
 		
 		this.setRegistryName(this.name);
-		this.setUnlocalizedName(Main.modID + "_" + this.name);
+		this.setUnlocalizedName(Reference.MODID + "_" + this.name);
 	}
 	
 
 	public void registerModel() 
 	{
 		// Item, metadata, resource location
-		ModelResourceLocation loc = new ModelResourceLocation(Main.modID + ":" + this.name);
+		ModelResourceLocation loc = new ModelResourceLocation(Reference.MODID + ":" + this.name);
 		ModelLoader.setCustomModelResourceLocation(this, 0, loc);
 	}
 

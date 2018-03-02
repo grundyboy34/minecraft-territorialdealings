@@ -1,0 +1,16 @@
+[
+{
+  "modid": "deeds",
+  "name": "Deeds",
+  "description": "Land claiming mod based on a simple ledger item.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["grundyboy34"],
+  "credits": "Contributors",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

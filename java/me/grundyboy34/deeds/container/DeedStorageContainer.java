@@ -1,6 +1,8 @@
 package me.grundyboy34.deeds.container;
 
+import me.grundyboy34.deeds.Deeds;
 import me.grundyboy34.deeds.container.slots.DeedStorageSlot;
+import me.grundyboy34.deeds.gui.DeedsGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -33,7 +35,7 @@ public class DeedStorageContainer extends Container {
 			this.addSlotToContainer(new Slot(playerInv, x, xPos + x * 18, yPos + 58));
 		}
 	}
-	
+
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int fromSlot) {
 		ItemStack previous = null;
@@ -64,22 +66,20 @@ public class DeedStorageContainer extends Container {
 		}
 		return previous;
 	}
-	
+
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
-		 super.onContainerClosed(player);
+		super.onContainerClosed(player);
+		if (!player.worldObj.isRemote) {
 
-	        if (!player.worldObj.isRemote)
-	        {
-	            
-	                ItemStack itemstack = this.getSlot(0).getStack();
+			ItemStack itemstack = this.getSlot(0).getStack();
 
-	                if (itemstack != null)
-	                {
-	                    player.dropItem(itemstack, false);
-	                }
-	            
-	        }}
+			if (itemstack != null) {
+				player.dropItem(itemstack, false);
+			}
+
+		}
+	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {

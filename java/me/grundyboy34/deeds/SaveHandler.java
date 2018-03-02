@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import me.grundyboy34.deeds.savedata._SaveData;
+import me.grundyboy34.deeds.savedata.SaveData;
 
 public class SaveHandler 
 {
-	public static void saveFactionsToFile(String configDir, String worldDir, _SaveData save)
+	public static void saveFactionsToFile(String configDir, String worldDir, SaveData save)
 	{
 		// Step 1, ensure that the folder exists
 		String folder = configDir + "/territorialdealings";
@@ -38,14 +38,14 @@ public class SaveHandler
 		catch (IOException e) { e.printStackTrace(); }
 		finally 
 		{ 
-			Main.console("Saved faction data for world '" + worldDir + "' to disk."); 
+			//Deeds.console("Saved faction data for world '" + worldDir + "' to disk."); 
 		}
 	}
 
 	
-	public static _SaveData loadFactionsFromFile(String configDir, String worldDir) 
+	public static SaveData loadFactionsFromFile(String configDir, String worldDir) 
 	{
-		_SaveData save = null;
+		SaveData save = null;
 
 		try
 		{
@@ -59,9 +59,9 @@ public class SaveHandler
 
 				Object loadedObj = loadHandle.readObject();
 
-				if (loadedObj instanceof _SaveData)	
+				if (loadedObj instanceof SaveData)	
 				{
-					save = (_SaveData) loadedObj;	// Here ya go
+					save = (SaveData) loadedObj;	// Here ya go
 				}
 
 				loadHandle.close();
@@ -78,7 +78,7 @@ public class SaveHandler
 		catch (ClassNotFoundException e) { e.printStackTrace(); }
 		finally
 		{
-			Main.console("Loaded factions data for world '" + worldDir + "' from disk.");
+			//Deeds.console("Loaded factions data for world '" + worldDir + "' from disk.");
 		}
 		
 		return save;

@@ -1,4 +1,4 @@
-package me.grundyboy34.deeds;
+/*package me.grundyboy34.deeds;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -20,18 +20,18 @@ public class EventListener
 	{
 		if (event.getWorld().isRemote) { return; }	// Not doing this on client side
 		
-		Main.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " placed by player " + event.getPlayer().getName() + 
+		Deeds.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " placed by player " + event.getPlayer().getName() + 
 				" (ID " + event.getPlayer().getGameProfile().getId() + ").");
 		
 		Chunk chunk = event.getPlayer().worldObj.getChunkFromBlockCoords(event.getPos());
 
 		if (TerritoryHandler.canPlayerEditChunk(event.getPlayer().worldObj, event.getPlayer(), chunk))	// Checks out
 		{
-			Main.console("Player is allowed to edit this chunk. Doing nothing.");
+			Deeds.console("Player is allowed to edit this chunk. Doing nothing.");
 		}
 		else
 		{
-			Main.console("Player is not allowed to edit this chunk. Cancelling.");
+			Deeds.console("Player is not allowed to edit this chunk. Cancelling.");
 			event.setCanceled(true);	// Not having it
 		}
 	}
@@ -42,18 +42,18 @@ public class EventListener
 	{
 		if (event.getWorld().isRemote) { return; }	// Not doing this on client side
 
-		Main.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " broken by player " + event.getPlayer().getName() + 
+		Deeds.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " broken by player " + event.getPlayer().getName() + 
 				" (ID " + event.getPlayer().getGameProfile().getId() + ").");
 
 		Chunk chunk = event.getPlayer().worldObj.getChunkFromBlockCoords(event.getPos());
 
 		if (TerritoryHandler.canPlayerEditChunk(event.getPlayer().worldObj, event.getPlayer(), chunk))	// Checks out
 		{
-			Main.console("Player is allowed to edit this chunk. Doing nothing.");
+			Deeds.console("Player is allowed to edit this chunk. Doing nothing.");
 		}
 		else
 		{
-			Main.console("Player is not allowed to edit this chunk. Cancelling.");
+			Deeds.console("Player is not allowed to edit this chunk. Cancelling.");
 			event.setCanceled(true);	// Not having it
 		}
 	}
@@ -72,17 +72,17 @@ public class EventListener
 
 		if (pos == null) { return; }	// Nevermind?
 
-		Main.console("Bucket used by player " + event.getEntityPlayer().getName() + " (ID " + event.getEntityPlayer().getGameProfile().getId() + ") at x" + pos.getX() + " y" + pos.getY() + " z" + pos.getZ() + ".");
+		Deeds.console("Bucket used by player " + event.getEntityPlayer().getName() + " (ID " + event.getEntityPlayer().getGameProfile().getId() + ") at x" + pos.getX() + " y" + pos.getY() + " z" + pos.getZ() + ".");
 
 		Chunk chunk = event.getEntityPlayer().worldObj.getChunkFromBlockCoords(pos);
 
 		if (TerritoryHandler.canPlayerEditChunk(event.getEntityPlayer().worldObj, event.getEntityPlayer(), chunk))	// Checks out
 		{
-			Main.console("Player is allowed to edit this chunk. Doing nothing.");
+			Deeds.console("Player is allowed to edit this chunk. Doing nothing.");
 		}
 		else
 		{
-			Main.console("Player is not allowed to edit this chunk. Cancelling.");
+			Deeds.console("Player is not allowed to edit this chunk. Cancelling.");
 			event.setCanceled(true);	// Not having it
 		}
 	}
@@ -92,20 +92,20 @@ public class EventListener
 	public void onRightClickBlock(RightClickBlock event)
 	{
 		if (event.getWorld().isRemote) { return; }		// Not doing this on client side
-		if (!Main.shouldCheckInteraction()) { return; }	// Not my business
+		if (!Deeds.shouldCheckInteraction()) { return; }	// Not my business
 
-		Main.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " touched by player " + event.getEntityPlayer().getName() + 
+		Deeds.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " touched by player " + event.getEntityPlayer().getName() + 
 				" (ID " + event.getEntityPlayer().getGameProfile().getId() + ").");
 
 		Chunk chunk = event.getEntityPlayer().worldObj.getChunkFromBlockCoords(event.getPos());
 
 		if (TerritoryHandler.canPlayerEditChunk(event.getEntityPlayer().worldObj, event.getEntityPlayer(), chunk))	// Checks out
 		{
-			Main.console("Player is allowed to interact with this chunk. Doing nothing.");
+			Deeds.console("Player is allowed to interact with this chunk. Doing nothing.");
 		}
 		else
 		{
-			Main.console("Player is not allowed to interact with this chunk. Cancelling.");
+			Deeds.console("Player is not allowed to interact with this chunk. Cancelling.");
 			event.setCanceled(true);	// Not having it
 		}
 	}
@@ -115,20 +115,20 @@ public class EventListener
 	public void onLeftClickBlock(LeftClickBlock event)
 	{
 		if (event.getWorld().isRemote) { return; }		// Not doing this on client side
-		if (!Main.shouldCheckInteraction()) { return; }	// Not my business
+		if (!Deeds.shouldCheckInteraction()) { return; }	// Not my business
 
-		Main.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " hit by player " + event.getEntityPlayer().getName() + 
+		Deeds.console("Block at x" + event.getPos().getX() + " y" + event.getPos().getY() + " z" + event.getPos().getZ() + " hit by player " + event.getEntityPlayer().getName() + 
 				" (ID " + event.getEntityPlayer().getGameProfile().getId() + ").");
 
 		Chunk chunk = event.getEntityPlayer().worldObj.getChunkFromBlockCoords(event.getPos());
 
 		if (TerritoryHandler.canPlayerEditChunk(event.getEntityPlayer().worldObj, event.getEntityPlayer(), chunk))	// Checks out
 		{
-			Main.console("Player is allowed to interact with this chunk. Doing nothing.");
+			Deeds.console("Player is allowed to interact with this chunk. Doing nothing.");
 		}
 		else
 		{
-			Main.console("Player is not allowed to interact with this chunk. Cancelling.");
+			Deeds.console("Player is not allowed to interact with this chunk. Cancelling.");
 			event.setCanceled(true);	// Not having it
 		}
 	}
@@ -141,7 +141,7 @@ public class EventListener
 		if (event.side == Side.CLIENT) { return; }
 		
 		// Chunk upkeep
-		if (Main.shouldCheckUpkeep())
+		if (Deeds.shouldCheckUpkeep())
 		{
 			TerritoryHandler.checkUpkeep();
 		}
@@ -150,8 +150,8 @@ public class EventListener
 		TerritoryHandler.checkChunkControl();
 		
 		// Autosave
-		Main.checkAutoSave();
+		Deeds.checkAutoSave();
 		
-		Main.checkDisplayTick();
+		Deeds.checkDisplayTick();
 	}
-}
+}*/

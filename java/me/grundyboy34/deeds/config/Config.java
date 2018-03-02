@@ -1,36 +1,30 @@
-/*package me.grundyboy34.deeds.config;
+package me.grundyboy34.deeds.config;
 
 import java.io.File;
 
-import com.arcaneware.unifier.shared.info.Reference;
-
+import me.grundyboy34.deeds.Reference;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 
 public class Config {
 	private static Configuration config = null;
+	private static File configFolder = null;
 	private static File configFile = null;
 	private static Config instance;
 
-	// configs
-	public boolean onItemTossEnable;
-	public boolean onItemPickupEnable;
-	public boolean inPlayerInventoryEnable;
-	public boolean inOtherInventoryEnable;
-	public boolean onLivingDropsEnable;
-	public boolean onBlockHarvestEnable;
-
-	public boolean onChunkLoadEnable;
-	public boolean inTileEntityEnable;
-
-	public String[] allowedPrefixes;
-	public String[] disallowedNames;
-	public String[] disallowedIds;
-	public String[] priorityModIds;
-
+	public boolean isBuildProtected; // do deeds have build protections?
+	public boolean isInteractProtected; // do deeds have interaction protections? (right-click, using doors, etc)
+	public boolean isExplosionProtected; // do deeds have explosion protections?
+	public boolean isFireProtected; // do deeds have fire-spread protections?
+	public boolean isSleepProtected; //do deeds have sleep protections? (others can't sleep on deed)
+	public boolean isPvpProtected; //do deeds have pvp protection?
+	
 	private Config() {
 		try {
-			configFile = new File(Loader.instance().getConfigDir(), Reference.CONFIG_FILE);
+			configFolder = new File(Loader.instance().getConfigDir(), Reference.CONFIG_CATEGORY);
+			configFolder.mkdirs();
+			
+			configFile = new File(configFolder, Reference.CONFIG_FILE);
 			config = new Configuration(configFile);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,7 +42,13 @@ public class Config {
 	public void reload() {
 		try {
 			config.load();
-			onItemTossEnable = config.getBoolean("onItemTossEnable", Reference.CONFIG_CATEGORY,
+			isBuildProtected = config.getBoolean("isBuildProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsBuildProtected, Reference.isBuildProtectedComment);
+			isInteractProtected = config.getBoolean("isInteractProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsInteractProtected, Reference.isInteractProtectedComment);
+			isExplosionProtected = config.getBoolean("isExplosionProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsExplosionProtected, Reference.isExplosionProtectedComment);
+			isFireProtected = config.getBoolean("isFireProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsFireProtected, Reference.isFireProtectedComment);
+			isSleepProtected = config.getBoolean("isSleepProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsSleepProtected, Reference.isSleepProtectedComment);
+			isPvpProtected = config.getBoolean("isPvpProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsPvpProtected, Reference.isPvpProtectedComment);
+			/*onItemTossEnable = config.getBoolean("onItemTossEnable", Reference.CONFIG_CATEGORY,
 					Reference.defaultOnItemTossEnable, "Enables unification when a player drops items.");
 			onItemPickupEnable = config.getBoolean("onItemPickupEnable", Reference.CONFIG_CATEGORY,
 					Reference.defaultOnItemPickupEnable, "Enables unification when items are picked up.");
@@ -77,10 +77,10 @@ public class Config {
 					Reference.defaultDisallowedIds, "Disallowed item Ids: Use f3+h in your client to see item ids");
 			priorityModIds = config.getStringList("priorityModIds", Reference.CONFIG_CATEGORY,
 					Reference.defaultPriorityModIds, "Mods with priority high enough to be specified above");
+			*/
 			config.save();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 }
-*/
