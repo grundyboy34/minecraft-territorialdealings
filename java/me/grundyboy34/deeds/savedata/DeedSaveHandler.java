@@ -41,14 +41,13 @@ public class DeedSaveHandler {
 
 		try {
 
-			File saveFile = new File(Config.configFolder, Reference.WORLD_DIR + ".dat");
+			File saveFile = new File(Reference.WORLD_DIR, "deeds.dat");
 			FileOutputStream saveFileStream = new FileOutputStream(saveFile); // Saving to the current profile
 			ObjectOutputStream saveHandle = new ObjectOutputStream(saveFileStream); // Creating the file handle
 
 			saveHandle.writeObject(currentSave); // Saving
 
-			saveHandle.close();
-			saveFileStream.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -59,7 +58,7 @@ public class DeedSaveHandler {
 
 	public void loadDeeds() {
 		try {
-			File loadFile = new File(Config.configFolder, Reference.WORLD_DIR + ".dat");
+			File loadFile = new File(Reference.WORLD_DIR, "deeds.dat");
 
 			if (loadFile.isFile()) // Exists
 			{

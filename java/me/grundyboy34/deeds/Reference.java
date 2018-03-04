@@ -1,5 +1,7 @@
 package me.grundyboy34.deeds;
 
+import java.io.File;
+
 import net.minecraft.util.ResourceLocation;
 
 public class Reference {
@@ -46,7 +48,7 @@ public class Reference {
 	public static final String[] defaultDeedTiers = { "0:0", "1:1500", "3:10000", "6:25000" };
 	// 3528 per irl day for t1 @ 1 upkeep cost per chunk
 
-	public static String WORLD_DIR = "errorfailuretoload"; // The name of the world. Should be unique, if I saw this
+	public static File WORLD_DIR = null; // The name of the world. Should be unique, if I saw this
 															// right
 
 	public static ResourceLocation getResourceLocation(String path) {
