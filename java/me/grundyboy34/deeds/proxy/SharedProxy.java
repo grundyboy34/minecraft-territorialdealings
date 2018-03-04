@@ -16,6 +16,8 @@ import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -62,5 +64,11 @@ public class SharedProxy {
 	}
 
 	public void onPlayerSetSpawn(PlayerSetSpawnEvent event) {
+	}
+	
+	public void serverLoad(FMLServerStartingEvent event) {
+	}
+
+	public void serverStopping(FMLServerStoppingEvent event) {
 	}
 }

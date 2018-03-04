@@ -1,8 +1,6 @@
 package me.grundyboy34.deeds.container;
 
-import me.grundyboy34.deeds.Deeds;
 import me.grundyboy34.deeds.container.slots.DeedStorageSlot;
-import me.grundyboy34.deeds.gui.DeedsGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;

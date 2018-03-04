@@ -15,12 +15,11 @@ public class SaveData implements Serializable {
 	private static final long serialVersionUID = 8882998640523378936L;
 
 	// This is what gets saved to file
+	private HashMap<SerializedChunkPos, ChunkSaveData> chunkMap = new HashMap<SerializedChunkPos, ChunkSaveData>();
 	private HashMap<UUID, DeedSaveData> deedMap = new HashMap<UUID, DeedSaveData>();
 	private HashMap<UUID, VaultSaveData> vaultMap = new HashMap<UUID, VaultSaveData>();
 
-	private int currentSaveTick; // Keeping track across server restarts how long we've gone without saving
-	private int currentUpkeepTick; // tick for processing deed upkeeps
-
+	private int currentTick;
 
 	
 	public DeedSaveData getDeedSaveData(UUID owner) {
@@ -30,36 +29,71 @@ public class SaveData implements Serializable {
 	public VaultSaveData getVaultSaveData(UUID owner) {
 		return vaultMap.get(owner);
 	}
-	
-	public HashMap<UUID, DeedSaveData> getDeedMap() {
-		return this.deedMap;
-	}
 
 	public Iterator<Entry<UUID, DeedSaveData>> getDeedMapIterator() {
 		return this.deedMap.entrySet().iterator();
-	}
-	
-	public HashMap<UUID, VaultSaveData> getVaultMap() {
-		return this.vaultMap;
 	}
 	
 	public Iterator<Entry<UUID, VaultSaveData>> getVaultMapIterator() {
 		return this.vaultMap.entrySet().iterator();
 	}
 
-	public int getUpkeepTick() {
-		return this.currentUpkeepTick;
+	public int getTick() {
+		return this.currentTick;
 	}
 
-	public void setUpkeepTick(int set) {
-		this.currentUpkeepTick = set;
+	public void setTick(int set) {
+		this.currentTick = set;
+	}
+	
+	public void tick() {
+		this.currentTick++;
+	}
+	
+	public void addDeed(SerializedChunkPos capitol, UUID owner, int world, String name) {
+		if (deedMap.putIfAbsent(owner, new DeedSaveData(world, name)) == null) {
+			addChunk(capitol, owner);
+		}
+	}
+	
+	public DeedSaveData getDeed(UUID owner) {
+		return this.deedMap.get(owner);
+	}
+	
+	public void removeDeed(UUID owner) {
+		DeedSaveData deedData = deedMap.remove(owner);
+		if (deedData != null) {
+			for (SerializedChunkPos chunk : deedData.getChunks()) {
+				removeChunk(chunk);
+			}
+		}
 	}
 
-	public int getSaveTick() {
-		return this.currentSaveTick;
+	public void addChunk(SerializedChunkPos pos, UUID owner) {
+		addChunk(pos, new ChunkSaveData(owner));
+	}
+	
+	public void addChunk(SerializedChunkPos pos, ChunkSaveData chunkData) {
+		if (chunkMap.putIfAbsent(pos,  chunkData) == null) {
+			DeedSaveData deedData = getDeedSaveData(chunkData.getOwner());
+			if (deedData != null) {
+				deedData.addChunk(pos);
+			}
+		}
 	}
 
-	public void setSaveTick(int set) {
-		this.currentSaveTick = set;
+	public void removeChunk(SerializedChunkPos pos) {
+		ChunkSaveData chunkData = chunkMap.remove(pos);
+		if (chunkData != null) {
+			DeedSaveData deedData = getDeedSaveData(chunkData.getOwner());
+			if (deedData != null) {
+				deedData.removeChunk(pos);
+			}
+		}
 	}
+
+	public ChunkSaveData getChunkSaveData(SerializedChunkPos pos) {
+		return chunkMap.get(pos);
+	}
+
 }

@@ -29,6 +29,9 @@ public class DeedLedger extends _ItemBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		if (true) {
+			BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
+			Chunk chunk = world.getChunkFromBlockCoords(pos);
+			System.out.println(chunk.getChunkCoordIntPair());
 			player.openGui(Deeds.instance, DeedsGuiHandler.DEED_LEDGER, world, player.chunkCoordX, player.chunkCoordY,
 					player.chunkCoordZ);
 			return new ActionResult(EnumActionResult.PASS, stack);

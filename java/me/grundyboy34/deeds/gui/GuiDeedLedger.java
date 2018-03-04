@@ -5,6 +5,7 @@ import java.io.IOException;
 import me.grundyboy34.deeds.Deeds;
 import me.grundyboy34.deeds.network.DeedsPacketHandler;
 import me.grundyboy34.deeds.network.OpenStoragePacket;
+import me.grundyboy34.deeds.network.StartDeedPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -91,6 +92,8 @@ public class GuiDeedLedger extends GuiScreen {
 
 			} else if (button == this.disbandButton) {
 				this.mc.displayGuiScreen(new GuiConfirmation(this, DEED_DISBAND_CONTEXT, DISBAND_CONFIRMATION_TEXT));
+			} else if (button == this.depositButton) {
+				DeedsPacketHandler.getNetworkWrapper().sendToServer(new StartDeedPacket());
 			}
 		}
 	}

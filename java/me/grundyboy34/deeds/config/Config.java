@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Loader;
 
 public class Config {
 	private static Configuration config = null;
-	private static File configFolder = null;
+	public static File configFolder = null;
 	private static File configFile = null;
 	private static Config instance;
 
@@ -18,6 +18,10 @@ public class Config {
 	public boolean isFireProtected; // do deeds have fire-spread protections?
 	public boolean isSleepProtected; //do deeds have sleep protections? (others can't sleep on deed)
 	public boolean isPvpProtected; //do deeds have pvp protection?
+	
+	
+	public int daysBeforeDowngrade, upkeepCost, freeChunks, maxVault, emeraldValue, diamondValue, goldValue;
+	public String[] deedTiers;
 	
 	private Config() {
 		try {
@@ -48,39 +52,46 @@ public class Config {
 			isFireProtected = config.getBoolean("isFireProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsFireProtected, Reference.isFireProtectedComment);
 			isSleepProtected = config.getBoolean("isSleepProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsSleepProtected, Reference.isSleepProtectedComment);
 			isPvpProtected = config.getBoolean("isPvpProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsPvpProtected, Reference.isPvpProtectedComment);
-			/*onItemTossEnable = config.getBoolean("onItemTossEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultOnItemTossEnable, "Enables unification when a player drops items.");
-			onItemPickupEnable = config.getBoolean("onItemPickupEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultOnItemPickupEnable, "Enables unification when items are picked up.");
-			inPlayerInventoryEnable = config.getBoolean("inPlayerInventoryEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultInPlayerInventoryEnable, "Enables unification in player inventory.");
-			inOtherInventoryEnable = config.getBoolean("inOtherInventoryEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultInOtherInventoryEnable,
-					"Enables unification in other inventories accessed by player. IE: Player opening a chest, now unifies contents of chest.");
-			onLivingDropsEnable = config.getBoolean("onLivingDropsEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultOnLivingDropsEnable,
-					"Enables unification on living entity drops. IE: player and mob deaths");
-			onBlockHarvestEnable = config.getBoolean("onBlockHarvestEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultOnBlockHarvestEnable, "Enables unification on block drops. IE: mining a block");
-			onChunkLoadEnable = config.getBoolean("onChunkLoadEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultOnChunkLoadEnable,
-					"Enables unification on chunk load. #WARNING#, can cause lag! Only enable to unify blocks in the world that have already been places/generated");
-			inTileEntityEnable = config.getBoolean("inTileEntityEnable", Reference.CONFIG_CATEGORY,
-					Reference.defaultInTileEntityEnable,
-					"Enables unification in tile entities (chests, etc) on world tick. #WARNING# Can possibly cause lag if lots of chests are around.");
-			allowedPrefixes = config.getStringList("allowedPrefixes", Reference.CONFIG_CATEGORY,
-					Reference.defaultAllowedPrefixes, "Allowed oreDictionary Prefixes");
-			disallowedNames = config.getStringList("disallowedNames", Reference.CONFIG_CATEGORY,
-					Reference.defaultDisallowedNames,
-					"Disallowed oreDictionary names: Use f3+h in your client WITH THE MOD to see oreDict names");
-			disallowedIds = config.getStringList("disallowedIds", Reference.CONFIG_CATEGORY,
-					Reference.defaultDisallowedIds, "Disallowed item Ids: Use f3+h in your client to see item ids");
-			priorityModIds = config.getStringList("priorityModIds", Reference.CONFIG_CATEGORY,
-					Reference.defaultPriorityModIds, "Mods with priority high enough to be specified above");
-			*/
+			
+			daysBeforeDowngrade = config.getInt("daysBeforeDowngrade", Reference.CONFIG_CATEGORY, Reference.defaultDaysBeforeDowngrade, 0, Integer.MAX_VALUE, Reference.daysBeforeDowngradeComment);
+			upkeepCost = config.getInt("upkeepCost", Reference.CONFIG_CATEGORY, Reference.defaultUpkeepCost, 0, Integer.MAX_VALUE, Reference.upkeepCostComment);
+			freeChunks = config.getInt("freeChunks", Reference.CONFIG_CATEGORY, Reference.defaultFreeChunks, 0, Integer.MAX_VALUE, Reference.freeChunksComment);
+			maxVault = config.getInt("maxVault", Reference.CONFIG_CATEGORY, Reference.defaultMaxVault, 0, Integer.MAX_VALUE, Reference.maxVaultComment);
+			emeraldValue = config.getInt("emeraldValue", Reference.CONFIG_CATEGORY, Reference.defaultEmeraldValue, 0, maxVault, Reference.emeraldValueComment);
+			diamondValue = config.getInt("diamondValue", Reference.CONFIG_CATEGORY, Reference.defaultDiamondValue, 0, maxVault, Reference.diamondValueComment);
+			goldValue = config.getInt("goldValue", Reference.CONFIG_CATEGORY, Reference.defaultGoldValue, 0, maxVault, Reference.goldValueComment);
+			deedTiers = config.getStringList("deedTiers", Reference.CONFIG_CATEGORY, Reference.defaultDeedTiers, Reference.deedTiersComment);
 			config.save();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public int getDeedTierRadius(int tier) {
+		if (deedTiers.length - 1 >= tier && tier >= 0) {
+			String[] split = deedTiers[tier].split(":");
+			if (split.length == 2) {
+				try {
+					return Integer.parseInt(split[0]);
+				} catch (Exception e) {
+					return 0;
+				}
+			}
+		}
+		return 0;
+	}
+	
+	public int getDeedTierCost(int tier) {
+		if (deedTiers.length - 1 >= tier && tier >= 0) {
+			String[] split = deedTiers[tier].split(":");
+			if (split.length == 2) {
+				try {
+					return Integer.parseInt(split[1]);
+				} catch (Exception e) {
+					return 0;
+				}
+			}
+		}
+		return 0;
 	}
 }
