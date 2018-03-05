@@ -23,7 +23,7 @@ public class StartDeedPacket implements IMessage, IMessageHandler<StartDeedPacke
 						DeedSaveHandler.instance().getCurrentSave().addDeed(new SerializedChunkPos(player.getPosition()), player.getUniqueID(), player.dimension, player.getGameProfile().getName());
 					}
 				});
-			}
+			} 
 		}
 
 		return null;

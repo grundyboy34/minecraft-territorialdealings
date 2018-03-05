@@ -1,6 +1,7 @@
 package me.grundyboy34.deeds;
 
 import me.grundyboy34.deeds.proxy.SharedProxy;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
@@ -9,6 +10,7 @@ import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
+import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.event.world.ExplosionEvent.Detonate;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -101,6 +103,21 @@ public class Deeds {
 	@SubscribeEvent
 	public void onPlayerSetSpawn(PlayerSetSpawnEvent event) {
 		sharedProxy.onPlayerSetSpawn(event);
+	}
+	
+	@SubscribeEvent
+	public void onChunkWatch(ChunkWatchEvent.Watch event) {
+		sharedProxy.onChunkWatch(event);
+	}
+	
+	@SubscribeEvent
+	public void onChunkWatch(ChunkWatchEvent.UnWatch event) {
+		sharedProxy.onChunkUnWatch(event);
+	}
+	
+	@SubscribeEvent
+	public void lastRender(RenderWorldLastEvent event) {
+		sharedProxy.lastRender(event);
 	}
 
 	/*

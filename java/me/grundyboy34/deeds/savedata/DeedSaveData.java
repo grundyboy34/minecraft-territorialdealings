@@ -3,6 +3,7 @@ package me.grundyboy34.deeds.savedata;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import me.grundyboy34.deeds.config.Config;
 import net.minecraft.util.math.ChunkPos;
 
 public class DeedSaveData implements Serializable {
@@ -86,6 +87,11 @@ public class DeedSaveData implements Serializable {
 	}
 
 	public int getDeedTier() {
+		if (deedTier < 0) {
+			deedTier = 0;
+		} else if (deedTier > Config.instance().maxDeedTier()) {
+			deedTier = Config.instance().maxDeedTier();
+		}
 		return deedTier;
 	}
 
@@ -101,6 +107,11 @@ public class DeedSaveData implements Serializable {
 	}
 
 	public void setDeedTier(int tier) {
+		if (tier < 0) {
+			tier = 0;
+		} else if (tier > Config.instance().maxDeedTier()) {
+			tier = Config.instance().maxDeedTier();
+		}
 		this.deedTier = tier;
 	}
 

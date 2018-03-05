@@ -27,6 +27,8 @@ public class DeedsPacketHandler {
 		wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID);
 		wrapper.registerMessage(OpenStoragePacket.class, OpenStoragePacket.class, packetId++, Side.SERVER);
 		wrapper.registerMessage(StartDeedPacket.class, StartDeedPacket.class, packetId++, Side.SERVER);
+		wrapper.registerMessage(SetChunkRenderPacket.class, SetChunkRenderPacket.class, packetId++, Side.CLIENT);
+		wrapper.registerMessage(RemoveChunkRenderPacket.class, RemoveChunkRenderPacket.class, packetId++, Side.CLIENT);
 		inited = true;
 	}
 }

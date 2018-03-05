@@ -4,6 +4,7 @@ import me.grundyboy34.deeds.Deeds;
 import me.grundyboy34.deeds.gui.DeedsGuiHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -12,13 +13,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-public class DeedLedger extends ItemBase {
+public class DeedLedger extends Item {
 	public DeedLedger() {
 		this.setMaxStackSize(1);
 		this.setFull3D();
 		this.setCreativeTab(CreativeTabs.TOOLS);
-
-		this.registerWithName("deedledger");
 	}
 
 	@Override

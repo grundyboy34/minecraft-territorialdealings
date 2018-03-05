@@ -54,6 +54,8 @@ public class SaveData implements Serializable {
 		if (deedMap.putIfAbsent(owner, new DeedSaveData(world, name)) == null) {
 			addChunk(capitol, owner);
 		}
+		deedMap.get(owner).setDeedTier(2);
+		System.out.println("Deed added " + deedMap.get(owner).getCapitolChunkPos() + " : " + deedMap.get(owner).getDeedTier());
 	}
 	
 	public DeedSaveData getDeed(UUID owner) {

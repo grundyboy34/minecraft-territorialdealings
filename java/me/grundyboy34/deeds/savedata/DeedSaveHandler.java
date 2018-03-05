@@ -33,6 +33,10 @@ public class DeedSaveHandler {
 	public SaveData getCurrentSave() {
 		return currentSave;
 	}
+	
+	public void setCurrentSave(SaveData data) {
+		this.currentSave = data;
+	}
 
 	public void saveDeeds() {
 		if (currentSave == null) {

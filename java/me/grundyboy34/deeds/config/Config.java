@@ -81,6 +81,10 @@ public class Config {
 		return 0;
 	}
 	
+	public int maxDeedTier() {
+		return deedTiers.length - 1;
+	}
+	
 	public int getDeedTierCost(int tier) {
 		if (deedTiers.length - 1 >= tier && tier >= 0) {
 			String[] split = deedTiers[tier].split(":");
