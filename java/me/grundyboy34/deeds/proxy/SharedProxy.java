@@ -9,7 +9,7 @@ import me.grundyboy34.deeds.Reference;
 import me.grundyboy34.deeds.config.Config;
 import me.grundyboy34.deeds.gui.DeedsGuiHandler;
 import me.grundyboy34.deeds.items.DeedLedger;
-import me.grundyboy34.deeds.items._ItemBase;
+import me.grundyboy34.deeds.items.ItemBase;
 import me.grundyboy34.deeds.network.DeedsPacketHandler;
 import me.grundyboy34.deeds.savedata.ChunkSaveData;
 import me.grundyboy34.deeds.savedata.DeedSaveData;
@@ -46,7 +46,7 @@ public class SharedProxy {
 		DeedsPacketHandler.init();
 	}
 
-	public void registerItem(_ItemBase item) {
+	public void registerItem(ItemBase item) {
 		GameRegistry.register(item);
 		item.registerRecipes();
 	}

@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-public class DeedLedger extends _ItemBase {
+public class DeedLedger extends ItemBase {
 	public DeedLedger() {
 		this.setMaxStackSize(1);
 		this.setFull3D();
