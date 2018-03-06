@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.ChunkPos;
 
 public class SaveData implements Serializable {
-	
 
 	/**
 	 * generated
@@ -24,11 +23,10 @@ public class SaveData implements Serializable {
 
 	private int currentTick;
 
-	
 	public DeedSaveData getDeedSaveData(UUID owner) {
 		return deedMap.get(owner);
 	}
-	
+
 	public VaultSaveData getVaultSaveData(UUID owner) {
 		return vaultMap.get(owner);
 	}
@@ -36,7 +34,7 @@ public class SaveData implements Serializable {
 	public Iterator<Entry<UUID, DeedSaveData>> getDeedMapIterator() {
 		return this.deedMap.entrySet().iterator();
 	}
-	
+
 	public Iterator<Entry<UUID, VaultSaveData>> getVaultMapIterator() {
 		return this.vaultMap.entrySet().iterator();
 	}
@@ -48,15 +46,15 @@ public class SaveData implements Serializable {
 	public void setTick(int set) {
 		this.currentTick = set;
 	}
-	
+
 	public void tick() {
 		this.currentTick++;
 	}
-	
+
 	public boolean hasPermissions(EntityPlayer player) {
 		return hasPermissions(new ChunkPos(player.getPosition()), player);
 	}
-	
+
 	public boolean hasPermissions(ChunkPos pos, EntityPlayer player) {
 		ChunkSaveData chunkData = getChunkSaveData(new SerializedChunkPos(pos));
 		if (chunkData == null || !chunkData.hasProtections() || chunkData.getOwner().equals(player.getUniqueID())) {
@@ -66,19 +64,28 @@ public class SaveData implements Serializable {
 			return deedData.isTrustee(player.getGameProfile().getName());
 		}
 	}
-	
+
 	public void addDeed(SerializedChunkPos capitol, UUID owner, int world, String name) {
-		if (deedMap.putIfAbsent(owner, new DeedSaveData(world, name)) == null) {
+		ChunkSaveData chunkData = getChunkSaveData(capitol);
+		if (chunkData == null && deedMap.putIfAbsent(owner, new DeedSaveData(world, name)) == null) {
 			addChunk(capitol, owner);
+			System.out.println(
+					"Deed added " + deedMap.get(owner).getCapitolChunkPos() + " : " + deedMap.get(owner).getDeedTier());
+			DeedSaveData currentDeed = deedMap.get(owner);
+			if (currentDeed != null) {
+				currentDeed.setDeedTier(2);
+			}
+		} else {
+			getDeed(chunkData.getOwner()).setDeedTier(0);
 		}
-		deedMap.get(owner).setDeedTier(2);
-		System.out.println("Deed added " + deedMap.get(owner).getCapitolChunkPos() + " : " + deedMap.get(owner).getDeedTier());
+
+		
 	}
-	
+
 	public DeedSaveData getDeed(UUID owner) {
 		return this.deedMap.get(owner);
 	}
-	
+
 	public void removeDeed(UUID owner) {
 		DeedSaveData deedData = deedMap.remove(owner);
 		if (deedData != null) {
@@ -91,9 +98,9 @@ public class SaveData implements Serializable {
 	public void addChunk(SerializedChunkPos pos, UUID owner) {
 		addChunk(pos, new ChunkSaveData(owner));
 	}
-	
+
 	public void addChunk(SerializedChunkPos pos, ChunkSaveData chunkData) {
-		if (chunkMap.putIfAbsent(pos,  chunkData) == null) {
+		if (chunkMap.putIfAbsent(pos, chunkData) == null) {
 			DeedSaveData deedData = getDeedSaveData(chunkData.getOwner());
 			if (deedData != null) {
 				deedData.addChunk(pos);

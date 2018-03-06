@@ -239,6 +239,9 @@ public class DeedMap extends ItemMap {
 											hasPermissions = deedData.isTrustee(player.getGameProfile().getName());
 										}
 									}
+								} else {
+									shouldHaveDeedColor = true;
+									hasPermissions = true;
 								}
 							}
 						}

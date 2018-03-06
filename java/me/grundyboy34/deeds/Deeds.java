@@ -1,7 +1,6 @@
 package me.grundyboy34.deeds;
 
 import me.grundyboy34.deeds.proxy.SharedProxy;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -9,7 +8,6 @@ import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
-import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
@@ -25,6 +23,8 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION, dependencies = Reference.DEPENDENCIES, acceptedMinecraftVersions = Reference.ACCEPTED_MINECRAFT_VERSIONS, acceptableRemoteVersions = Reference.ACCEPTABLE_REMOTE_VERSIONS)
 public class Deeds {
@@ -129,9 +129,10 @@ public class Deeds {
 	}
 	
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public void lastRender(RenderWorldLastEvent event) {
-		Minecraft.getMinecraft().theWorld.getChunkProvider();
-		sharedProxy.lastRender(event);
+		/*Minecraft.getMinecraft().theWorld.getChunkProvider();
+		sharedProxy.lastRender(event);*/
 	}
 
 	/*

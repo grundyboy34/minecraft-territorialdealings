@@ -29,7 +29,7 @@ public class DeedSaveData implements Serializable {
 		this.deedTier = 0;
 		this.growCounter = 0;
 		this.frontierRadius = 0;
-		this.capitolRadius = 0;
+		this.capitolRadius = -1;
 
 		// Init
 		this.trustees = new ArrayList<String>(15); // 15 lines on editable page
@@ -53,7 +53,11 @@ public class DeedSaveData implements Serializable {
 	}
 	
 	public boolean isAtMaxGrowCounter() {
-		return getGrowCounter() == maxGrowCounter();
+		return isAtMaxGrowCounter(getFrontierRadius());
+	}
+	
+	public boolean isAtMaxGrowCounter(int radius) {
+		return getGrowCounter() == maxGrowCounter(radius);
 	}
 	
 	public boolean isAtMinGrowCounter() {
@@ -65,7 +69,14 @@ public class DeedSaveData implements Serializable {
 	}
 	
 	public int maxGrowCounter() {
-		return (getCapitolRadius() * 8) - 1;
+		return maxGrowCounter(getFrontierRadius());
+	}
+	
+	public int maxGrowCounter(int radius) {
+		if (radius < 1) {
+			return 0;
+		}
+		return (radius * 8) - 1;
 	}
 
 	public int getGrowCounter() {
@@ -100,9 +111,6 @@ public class DeedSaveData implements Serializable {
 	}
 
 	public void setCapitolRadius(int radius) {
-		if (radius < 0) {
-			radius = 0;
-		}
 		this.capitolRadius = radius;
 	}
 

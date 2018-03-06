@@ -60,7 +60,7 @@ public class SharedProxy {
 	}
 
 	public void onBlockHarvestEvent(HarvestDropsEvent event) {
-		if (!event.getWorld().isRemote && Config.instance().isBuildProtected) {
+		if (!event.getWorld().isRemote && Config.instance().isBuildProtected && event.getHarvester() != null) {
 			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getPos()),
 					event.getHarvester())) {
 				event.setCanceled(true);
@@ -137,17 +137,18 @@ public class SharedProxy {
 				event.setCanceled(true);
 				return;
 			}
-			entityChunk = DeedSaveHandler.instance().getCurrentSave().getChunkSaveData(new SerializedChunkPos(event.getSource().getSourceOfDamage().getPosition()));
+			entityChunk = DeedSaveHandler.instance().getCurrentSave()
+					.getChunkSaveData(new SerializedChunkPos(event.getSource().getSourceOfDamage().getPosition()));
 			if (entityChunk != null && entityChunk.hasProtections()) {
 				event.setCanceled(true);
 			}
 		}
 	}
-	
 
 	public void onSpawnSet(PlayerSetSpawnEvent event) {
 		if (!event.getEntity().getEntityWorld().isRemote && Config.instance().isSleepProtected) {
-			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getNewSpawn()), event.getEntityPlayer())) {
+			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getNewSpawn()),
+					event.getEntityPlayer())) {
 				event.setCanceled(true);
 			}
 		}
@@ -173,7 +174,7 @@ public class SharedProxy {
 	public void onWorldTick(WorldTickEvent event) {
 		if (event.side.isServer() && event.phase == Phase.END) {
 			DeedSaveHandler.instance().getCurrentSave().tick();
-			if (DeedSaveHandler.instance().getCurrentSave().getTick() >= 100) {
+			if (DeedSaveHandler.instance().getCurrentSave().getTick() >= 20) {
 				Iterator<Entry<UUID, DeedSaveData>> iter = DeedSaveHandler.instance().getCurrentSave()
 						.getDeedMapIterator();
 
@@ -204,51 +205,55 @@ public class SharedProxy {
 					boolean frontierGrow = data.getFrontierRadius() < maxRadius
 							&& data.getFrontierRadius() <= data.getCapitolRadius();
 					boolean frontierShrink = data.getFrontierRadius() > maxRadius
-							&& data.getFrontierRadius() > data.getCapitolRadius();
+							&& data.getFrontierRadius() > data.getCapitolRadius()
+							&& data.isAtMaxGrowCounter();
 					boolean capitolGrow = data.getCapitolRadius() < maxRadius
 							&& data.getCapitolRadius() < data.getFrontierRadius();
-					boolean capitolShrink = data.getCapitolRadius() > maxRadius
-							&& data.getCapitolRadius() >= data.getFrontierRadius();
+					boolean capitolShrink = data.getFrontierRadius() > maxRadius
+							&& data.getFrontierRadius() > 0;
+
+					System.out.println(frontierGrow + ":" + frontierShrink + ":" + capitolGrow + ":" + capitolShrink);
+
+					System.out.println(data.getFrontierRadius() + ":" + data.getCapitolRadius() + ":"
+							+ data.getGrowCounter() + ":" + data.maxGrowCounter());
 
 					if (frontierGrow || frontierShrink) {
 						int offset = frontierGrow ? 1 : 0;
 						for (SerializedChunkPos pos : getAllRadialChunks(data.getCapitolChunkPos(),
 								data.getFrontierRadius() + offset)) {
-							if (offset > 0) {
+							if (frontierGrow) {
 								DeedSaveHandler.instance().getCurrentSave().addChunk(pos, owner);
-							} else {
+							} else if (frontierShrink) {
 								DeedSaveHandler.instance().getCurrentSave().removeChunk(pos);
 							}
 						}
-						data.setFrontierRadius(data.getFrontierRadius() + (offset > 0 ? offset : -1));
+						data.setFrontierRadius(data.getFrontierRadius() + (frontierGrow ? 1 : frontierShrink ? -1 : 0));
 						continue;
 					} else if (capitolGrow) {
 						// grow counter goes 0 to (8r - 1)
-						SerializedChunkPos pos = getNextRadialChunk(data.getCapitolChunkPos(), data.getCapitolRadius(),
+						SerializedChunkPos pos = getNextRadialChunk(data.getCapitolChunkPos(), data.getFrontierRadius(),
 								data.getGrowCounter());
 						ensureProtections(pos, true);
-						data.setGrowCounter(data.getGrowCounter() + 1);
 						if (data.isAtMaxGrowCounter()) {
 							data.setCapitolRadius(data.getCapitolRadius() + 1);
-							data.setGrowCounter(0);
+							data.setGrowCounter(data.minGrowCounter());
+						} else {
+							data.setGrowCounter(data.getGrowCounter() + 1);
 						}
 						continue;
 					} else if (capitolShrink) {
 						// grow counter goes 0 to (8r - 1)
-						SerializedChunkPos pos = getNextRadialChunk(data.getCapitolChunkPos(), data.getCapitolRadius(),
+						SerializedChunkPos pos = getNextRadialChunk(data.getCapitolChunkPos(), data.getFrontierRadius(),
 								data.getGrowCounter());
 						ensureProtections(pos, false);
-						data.setGrowCounter(data.getGrowCounter() - 1);
-						if (data.isAtMinGrowCounter()) {
+						if (data.isAtMaxGrowCounter()) {
 							data.setCapitolRadius(data.getCapitolRadius() - 1);
-							data.setGrowCounter(data.maxGrowCounter());
+							data.setGrowCounter(data.minGrowCounter());
+						} else {
+							data.setGrowCounter(data.getGrowCounter() - 1);
 						}
 						continue;
-					} else if (data.getCapitolRadius() == 0) {
-						ensureProtections(data.getCapitolChunkPos(), true);
-						continue;
-
-					}
+					} 
 				}
 
 				DeedSaveHandler.instance().getCurrentSave().setTick(0);
@@ -300,13 +305,13 @@ public class SharedProxy {
 			xOffset = radius * -1;
 			zOffset = (division != 0 ? (radius * -1) + division : 0);
 			break;
-		case 2:// ++
+		case 2:// +-
 			xOffset = (division != 0 ? radius : 0);
-			zOffset = radius - division;
-			break;
-		case 3:// --
-			xOffset = (division != 0 ? radius * -1 : 0);
 			zOffset = (radius * -1) + division;
+			break;
+		case 3:// -+
+			xOffset = (division != 0 ? radius * -1 : 0);
+			zOffset = radius - division;
 			break;
 		case 4:// ++
 			xOffset = radius - division;
