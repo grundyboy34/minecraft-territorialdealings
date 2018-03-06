@@ -18,6 +18,8 @@ public class ItemRegistryHelper {
 		private String name;
 		
 		DEED_ITEMS(Item item, String name) {
+			item.setRegistryName(name);
+			item.setUnlocalizedName(Reference.MODID + "_" + name);
 			this.item = item;
 			this.name = name;
 		}

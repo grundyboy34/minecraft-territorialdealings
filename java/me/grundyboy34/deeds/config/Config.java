@@ -14,8 +14,7 @@ public class Config {
 
 	public boolean isBuildProtected; // do deeds have build protections?
 	public boolean isInteractProtected; // do deeds have interaction protections? (right-click, using doors, etc)
-	public boolean isExplosionProtected; // do deeds have explosion protections?
-	public boolean isFireProtected; // do deeds have fire-spread protections?
+	public boolean isExplosionProtected; // do deeds have explosion protections? -- only counts toward player sourced explosions
 	public boolean isSleepProtected; //do deeds have sleep protections? (others can't sleep on deed)
 	public boolean isPvpProtected; //do deeds have pvp protection?
 	
@@ -49,7 +48,6 @@ public class Config {
 			isBuildProtected = config.getBoolean("isBuildProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsBuildProtected, Reference.isBuildProtectedComment);
 			isInteractProtected = config.getBoolean("isInteractProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsInteractProtected, Reference.isInteractProtectedComment);
 			isExplosionProtected = config.getBoolean("isExplosionProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsExplosionProtected, Reference.isExplosionProtectedComment);
-			isFireProtected = config.getBoolean("isFireProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsFireProtected, Reference.isFireProtectedComment);
 			isSleepProtected = config.getBoolean("isSleepProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsSleepProtected, Reference.isSleepProtectedComment);
 			isPvpProtected = config.getBoolean("isPvpProtected", Reference.CONFIG_CATEGORY, Reference.defaultIsPvpProtected, Reference.isPvpProtectedComment);
 			

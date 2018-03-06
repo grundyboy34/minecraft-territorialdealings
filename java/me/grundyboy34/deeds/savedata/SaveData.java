@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.ChunkPos;
+
 public class SaveData implements Serializable {
 	
 
@@ -48,6 +51,20 @@ public class SaveData implements Serializable {
 	
 	public void tick() {
 		this.currentTick++;
+	}
+	
+	public boolean hasPermissions(EntityPlayer player) {
+		return hasPermissions(new ChunkPos(player.getPosition()), player);
+	}
+	
+	public boolean hasPermissions(ChunkPos pos, EntityPlayer player) {
+		ChunkSaveData chunkData = getChunkSaveData(new SerializedChunkPos(pos));
+		if (chunkData == null || !chunkData.hasProtections() || chunkData.getOwner().equals(player.getUniqueID())) {
+			return true;
+		} else {
+			DeedSaveData deedData = getDeedSaveData(chunkData.getOwner());
+			return deedData.isTrustee(player.getGameProfile().getName());
+		}
 	}
 	
 	public void addDeed(SerializedChunkPos capitol, UUID owner, int world, String name) {

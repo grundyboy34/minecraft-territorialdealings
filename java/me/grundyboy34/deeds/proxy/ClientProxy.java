@@ -19,11 +19,12 @@ public class ClientProxy extends SharedProxy {
 
 	@Override
 	public void lastRender(RenderWorldLastEvent event) {
-		ItemStack mainHand = Minecraft.getMinecraft().thePlayer.getHeldItemMainhand();
+	/*	ItemStack mainHand = Minecraft.getMinecraft().thePlayer.getHeldItemMainhand();
 		if (mainHand != null && mainHand.isItemEqual(ItemRegistryHelper.DEED_ITEMS.DEED_LEDGER.asItemStack())) {
 			
 		}
 		Minecraft.getMinecraft().theWorld.getChunkProvider();
 		event.getContext().drawBoundingBox(minX, minY, minZ, maxX, maxY, maxZ, red, green, blue, alpha);
+	*/
 	}
 }

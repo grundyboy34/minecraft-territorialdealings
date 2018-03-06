@@ -26,7 +26,6 @@ public class Reference {
 	public static final String isBuildProtectedComment = "Is building/destroying protected on claimed chunks?",
 			isInteractProtectedComment = "Is interaction protected on claimed chunks? (opening doors, chests, etc)",
 			isExplosionProtectedComment = "Are explosions protected on claimed chunks? (doesn't matter the source)",
-			isFireProtectedComment = "Is fire protected on claimed chunks? (no fire spread if on)",
 			isPvpProtectedComment = "Is pvp protected on claimed chunks? (no pvp damage if so)",
 			isSleepProtectedComment = "Is sleep protected on claimed chunks? (Outsiders may sleep, but spawn point won't be set)",
 			upkeepCostComment = "Cost per minecraft day per protected chunk",

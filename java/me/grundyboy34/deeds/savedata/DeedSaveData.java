@@ -114,9 +114,18 @@ public class DeedSaveData implements Serializable {
 		}
 		this.deedTier = tier;
 	}
+	
+	public boolean addTrustee(String playerName) {
+		if (trustees.size() == 15 || trustees.contains(playerName)) {
+			return false;
+		} else {
+			trustees.add(playerName.toLowerCase());
+			return true;
+		}
+	}
 
 	public boolean isTrustee(String playerName) {
-		return trustees.contains(playerName);
+		return trustees.contains(playerName.toLowerCase());
 	}
 
 	public int getOfflineCycles() {

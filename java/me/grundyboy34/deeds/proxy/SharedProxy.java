@@ -14,9 +14,13 @@ import me.grundyboy34.deeds.savedata.ChunkSaveData;
 import me.grundyboy34.deeds.savedata.DeedSaveData;
 import me.grundyboy34.deeds.savedata.DeedSaveHandler;
 import me.grundyboy34.deeds.savedata.SerializedChunkPos;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -47,37 +51,122 @@ public class SharedProxy {
 	}
 
 	public void onBlockPlaceEvent(PlaceEvent event) {
+		if (!event.getWorld().isRemote && Config.instance().isBuildProtected) {
+			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getPos()),
+					event.getPlayer())) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	public void onBlockHarvestEvent(HarvestDropsEvent event) {
+		if (!event.getWorld().isRemote && Config.instance().isBuildProtected) {
+			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getPos()),
+					event.getHarvester())) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	public void onBlockBreakEvent(BreakEvent event) {
+		if (!event.getWorld().isRemote && Config.instance().isBuildProtected) {
+			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getPos()),
+					event.getPlayer())) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	public void onRightClickBlock(RightClickBlock event) {
+		if (!event.getWorld().isRemote && Config.instance().isInteractProtected) {
+			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getPos()),
+					event.getEntityPlayer())) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	public void onLeftClickBlock(LeftClickBlock event) {
+		if (!event.getWorld().isRemote && Config.instance().isInteractProtected) {
+			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getPos()),
+					event.getEntityPlayer())) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	public void onBucketFill(FillBucketEvent event) {
+		if (!event.getWorld().isRemote && Config.instance().isInteractProtected) {
+			if (!DeedSaveHandler.instance().getCurrentSave()
+					.hasPermissions(new ChunkPos(event.getTarget().getBlockPos()), event.getEntityPlayer())) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	public void onExplosion(Detonate event) {
+		if (!event.getWorld().isRemote && Config.instance().isExplosionProtected
+				&& event.getExplosion().getExplosivePlacedBy() instanceof EntityPlayer) {
+
+			ChunkSaveData chunkData;
+			for (Iterator<BlockPos> it = event.getAffectedBlocks().iterator(); it.hasNext();) {
+				BlockPos current = it.next();
+				chunkData = DeedSaveHandler.instance().getCurrentSave()
+						.getChunkSaveData(new SerializedChunkPos(current));
+				if (chunkData != null && chunkData.hasProtections()) {
+					it.remove();
+				}
+			}
+			for (Iterator<Entity> it = event.getAffectedEntities().iterator(); it.hasNext();) {
+				Entity current = it.next();
+				chunkData = DeedSaveHandler.instance().getCurrentSave()
+						.getChunkSaveData(new SerializedChunkPos(current.getPosition()));
+				if (chunkData != null && chunkData.hasProtections()) {
+					it.remove();
+				}
+			}
+		}
 	}
-	
-	public void onChunkWatch(ChunkWatchEvent.Watch event) {
-		ChunkSaveData chunkData = DeedSaveHandler.instance().getCurrentSave().getChunkSaveData(new SerializedChunkPos(event.getChunk()));
-		if (chunkData != null) {
-			
+
+	public void onLivingHurt(LivingHurtEvent event) {
+		if (!event.getEntity().getEntityWorld().isRemote && Config.instance().isPvpProtected
+				&& event.getSource().getSourceOfDamage() instanceof EntityPlayer) {
+			ChunkSaveData entityChunk = DeedSaveHandler.instance().getCurrentSave()
+					.getChunkSaveData(new SerializedChunkPos(event.getEntity().getPosition()));
+			if (entityChunk != null && entityChunk.hasProtections()) {
+				event.setCanceled(true);
+				return;
+			}
+			entityChunk = DeedSaveHandler.instance().getCurrentSave().getChunkSaveData(new SerializedChunkPos(event.getSource().getSourceOfDamage().getPosition()));
+			if (entityChunk != null && entityChunk.hasProtections()) {
+				event.setCanceled(true);
+			}
 		}
 	}
 	
-	public void onChunkWatch(ChunkWatchEvent.UnWatch event) {
-		
+
+	public void onSpawnSet(PlayerSetSpawnEvent event) {
+		if (!event.getEntity().getEntityWorld().isRemote && Config.instance().isSleepProtected) {
+			if (!DeedSaveHandler.instance().getCurrentSave().hasPermissions(new ChunkPos(event.getNewSpawn()), event.getEntityPlayer())) {
+				event.setCanceled(true);
+			}
+		}
 	}
-	
+
+	public void onChunkWatch(ChunkWatchEvent.Watch event) {
+		/*
+		 * ChunkSaveData chunkData =
+		 * DeedSaveHandler.instance().getCurrentSave().getChunkSaveData(new
+		 * SerializedChunkPos(event.getChunk())); if (chunkData != null) {
+		 * 
+		 * }
+		 */
+	}
+
+	public void onChunkUnWatch(ChunkWatchEvent.UnWatch event) {
+
+	}
+
 	public void lastRender(RenderWorldLastEvent event) {
 	}
 
@@ -85,21 +174,22 @@ public class SharedProxy {
 		if (event.side.isServer() && event.phase == Phase.END) {
 			DeedSaveHandler.instance().getCurrentSave().tick();
 			if (DeedSaveHandler.instance().getCurrentSave().getTick() >= 100) {
-				Iterator<Entry<UUID, DeedSaveData>> iter = DeedSaveHandler.instance().getCurrentSave().getDeedMapIterator();
+				Iterator<Entry<UUID, DeedSaveData>> iter = DeedSaveHandler.instance().getCurrentSave()
+						.getDeedMapIterator();
 
 				while (iter.hasNext()) {
 					Entry<UUID, DeedSaveData> currentEntry = iter.next();
 					UUID owner = currentEntry.getKey();
 					DeedSaveData data = currentEntry.getValue();
-				
-					//process offline cycles
+
+					// process offline cycles
 					if (event.world.getPlayerEntityByUUID(owner) == null) {
 						data.incrementOfflineCycle();
 					} else {
 						data.resetOfflineCycles();
 					}
-					
-					//72 cycles per day: 1 cycle = 20 mins
+
+					// 72 cycles per day: 1 cycle = 20 mins
 					if (data.getOfflineCycles() >= Config.instance().daysBeforeDowngrade * 72) {
 						data.setDeedTier(data.getDeedTier() - 1);
 						data.resetOfflineCycles();
@@ -108,7 +198,7 @@ public class SharedProxy {
 							continue;
 						}
 					}
-					
+
 					int maxRadius = Config.instance().getDeedTierRadius(data.getDeedTier());
 
 					boolean frontierGrow = data.getFrontierRadius() < maxRadius
@@ -125,8 +215,7 @@ public class SharedProxy {
 						for (SerializedChunkPos pos : getAllRadialChunks(data.getCapitolChunkPos(),
 								data.getFrontierRadius() + offset)) {
 							if (offset > 0) {
-								DeedSaveHandler.instance().getCurrentSave().addChunk(pos,
-										owner);
+								DeedSaveHandler.instance().getCurrentSave().addChunk(pos, owner);
 							} else {
 								DeedSaveHandler.instance().getCurrentSave().removeChunk(pos);
 							}
@@ -170,7 +259,7 @@ public class SharedProxy {
 
 	public void onPlayerSetSpawn(PlayerSetSpawnEvent event) {
 	}
-	
+
 	public void serverLoad(FMLServerStartingEvent event) {
 		Reference.WORLD_DIR = DimensionManager.getCurrentSaveRootDirectory();// Hand me that world name
 		DeedSaveHandler.instance().loadDeeds();
@@ -180,8 +269,7 @@ public class SharedProxy {
 		DeedSaveHandler.instance().saveDeeds();
 		DeedSaveHandler.instance().setCurrentSave(null);
 	}
-	
-	
+
 	public void ensureProtections(SerializedChunkPos pos, boolean protections) {
 		ChunkSaveData data = DeedSaveHandler.instance().getCurrentSave().getChunkSaveData(pos);
 		if (data != null) {
